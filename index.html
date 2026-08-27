@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hệ Thống Theo Dõi Thu Chi & Kế Hoạch Tài Chính Cá Nhân</title>
+  
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/dashboard.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+</head>
+<body>
+  <div style="display: flex; min-height: 100vh; align-items: center; justify-content: center; background-color: var(--bg-subtle);">
+    <div style="text-align: center; max-width: 420px; padding: 2rem;">
+      <div style="width: 64px; height: 64px; border-radius: var(--radius-lg); background-color: var(--primary); color: white; display: inline-flex; align-items: center; justify-content: center; font-size: 1.75rem; margin-bottom: 1.25rem; box-shadow: var(--shadow-md);">
+        <i class="fas fa-wallet"></i>
+      </div>
+      <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 0.5rem;">Đang tải hệ thống tài chính...</h2>
+      <p style="color: var(--text-muted); font-size: 0.875rem;">Vui lòng chờ trong giây lát</p>
+    </div>
+  </div>
+
+  <script type="module">
+    import { getCurrentUser } from '/js/auth.js';
+    const user = getCurrentUser();
+    if (user) {
+      window.location.replace('/dashboard.html');
+    } else {
+      window.location.replace('/login.html');
+    }
+  </script>
+</body>
+</html>

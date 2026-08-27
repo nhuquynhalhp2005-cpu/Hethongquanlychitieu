@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kế Hoạch Tài Chính - Hệ Thống Tài Chính Cá Nhân</title>
+
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/dashboard.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+</head>
+<body>
+
+  <div class="app-layout" id="app-layout">
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <div class="main-wrapper">
+      <header class="header" id="header"></header>
+
+      <main class="page-content" id="page-content">
+        
+        <!-- Action Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 0.25rem;">Kế Hoạch Tài Chính Dài Hạn</h2>
+            <p style="color: var(--text-muted); font-size: 0.875rem;">Thiết lập lộ trình tích lũy, hệ thống tự động tính số tiền cần tiết kiệm mỗi tháng</p>
+          </div>
+          <button id="btn-open-add-plan" class="btn btn-primary">
+            <i class="fas fa-plus-circle"></i> + Tạo Kế Hoạch Mới
+          </button>
+        </div>
+
+        <!-- Metric Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-title">Số Lượng Kế Hoạch</span>
+              <div class="stat-icon icon-saving"><i class="fas fa-compass"></i></div>
+            </div>
+            <div class="stat-value" id="plans-count">0 kế hoạch</div>
+            <div class="stat-subtext">Dự định tài chính đang theo đuổi</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-title">Tổng Mục Tiêu Cần Đạt</span>
+              <div class="stat-icon icon-income"><i class="fas fa-bullseye"></i></div>
+            </div>
+            <div class="stat-value text-primary" id="plans-total-target">0 ₫</div>
+            <div class="stat-subtext">Tổng quy mô vốn các kế hoạch</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-title">Đã Tích Lũy Được</span>
+              <div class="stat-icon icon-saving"><i class="fas fa-piggy-bank"></i></div>
+            </div>
+            <div class="stat-value text-success" id="plans-total-current">0 ₫</div>
+            <div class="stat-subtext">Số vốn đã chuẩn bị sẵn sàng</div>
+          </div>
+        </div>
+
+        <!-- Plans Grid -->
+        <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--brand-navy); margin: 1.75rem 0 1rem 0;">Danh Sách Kế Hoạch</h3>
+        <div class="items-grid" id="plans-grid">
+          <!-- Loaded by JS -->
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal: Add / Edit Financial Plan -->
+  <div id="plan-modal" class="modal-backdrop">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title" id="plan-modal-title">Tạo Kế Hoạch Tài Chính Mới</h3>
+        <button class="modal-close" id="plan-modal-close">&times;</button>
+      </div>
+      <form id="plan-form">
+        <div class="modal-body">
+          <input type="hidden" id="plan-edit-id" />
+
+          <div class="form-group">
+            <label class="form-label" for="plan-name">Tên kế hoạch <span style="color: var(--expense-color);">*</span></label>
+            <input type="text" id="plan-name" class="form-control" placeholder="Ví dụ: Mua nhà chung cư, Vốn mở quán cà phê..." required />
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="plan-target-amount">Số tiền mục tiêu (VNĐ) <span style="color: var(--expense-color);">*</span></label>
+              <input type="number" id="plan-target-amount" class="form-control" placeholder="500000000" min="1000" step="1000" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="plan-current-amount">Số tiền hiện có (VNĐ)</label>
+              <input type="number" id="plan-current-amount" class="form-control" placeholder="50000000" min="0" step="1000" />
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="plan-start-date">Ngày bắt đầu</label>
+              <input type="date" id="plan-start-date" class="form-control" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="plan-end-date">Ngày kết thúc mục tiêu <span style="color: var(--expense-color);">*</span></label>
+              <input type="date" id="plan-end-date" class="form-control" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="plan-desc">Mô tả chi tiết</label>
+            <textarea id="plan-desc" class="form-control" rows="2" placeholder="Chi tiết các bước thực hiện..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="plan-modal-cancel">Hủy Bỏ</button>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Lưu Kế Hoạch</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="confirm-modal" class="modal-backdrop"></div>
+  <div id="firebase-config-modal" class="modal-backdrop"></div>
+  <div id="toast-container" class="toast-container"></div>
+
+  <script type="module">
+    import { initFinancialPlansPage } from '/js/financial-plans.js';
+    initFinancialPlansPage();
+  </script>
+</body>
+</html>

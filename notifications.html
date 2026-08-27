@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trung Tâm Thông Báo - Hệ Thống Tài Chính Cá Nhân</title>
+
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/dashboard.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+</head>
+<body>
+
+  <div class="app-layout" id="app-layout">
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <div class="main-wrapper">
+      <header class="header" id="header"></header>
+
+      <main class="page-content" id="page-content">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 0.25rem;">Trung Tâm Thông Báo & Cảnh Báo</h2>
+            <p style="color: var(--text-muted); font-size: 0.875rem;">Theo dõi cảnh báo ngân sách 80%, vượt chi tiêu, nhắc nợ và thời hạn mục tiêu</p>
+          </div>
+          <div style="display: flex; gap: 0.75rem; align-items: center;">
+            <span id="notif-unread-count" class="badge badge-warning">0 chưa đọc</span>
+            <button id="btn-mark-all-read-page" class="btn btn-secondary">
+              <i class="fas fa-check-double"></i> Đánh Dấu Đã Đọc Tất Cả
+            </button>
+          </div>
+        </div>
+
+        <div id="notifications-list" style="max-width: 800px;">
+          <!-- Loaded by JS -->
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <div id="confirm-modal" class="modal-backdrop"></div>
+  <div id="firebase-config-modal" class="modal-backdrop"></div>
+  <div id="toast-container" class="toast-container"></div>
+
+  <script type="module">
+    import { initNotificationsPage } from '/js/notifications.js';
+    initNotificationsPage();
+  </script>
+</body>
+</html>

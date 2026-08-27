@@ -1,0 +1,6 @@
+{
+  "name": "Hệ Thống Quản Lý Chi Tiêu Tài Chính Cá Nhân",
+  "description": "Website theo dõi thu chi, quản lý ngân sách, kế hoạch tài chính, mục tiêu tiết kiệm, quản lý nợ và báo cáo trực quan.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

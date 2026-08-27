@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đăng Nhập - Hệ Thống Theo Dõi Thu Chi & Kế Hoạch Tài Chính Cá Nhân</title>
+
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/auth.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+</head>
+<body class="auth-page">
+
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="auth-logo">
+        <i class="fas fa-wallet"></i>
+      </div>
+      <h1 class="auth-title">Đăng Nhập Hệ Thống</h1>
+      <p class="auth-subtitle">Quản lý thu chi & kế hoạch tài chính cá nhân thông minh</p>
+    </div>
+
+    <!-- Alert Box -->
+    <div id="auth-alert" class="auth-alert"></div>
+
+    <form id="login-form">
+      <div class="form-group">
+        <label class="form-label" for="login-email">Địa chỉ Email</label>
+        <div class="input-with-icon">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="login-email" class="form-control" placeholder="name@example.com" required autocomplete="email" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="login-password">Mật khẩu</label>
+        <div class="input-with-icon">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="login-password" class="form-control" placeholder="••••••••" required autocomplete="current-password" />
+        </div>
+      </div>
+
+      <div class="form-check" style="margin-bottom: 1.25rem;">
+        <input type="checkbox" id="remember-me" checked />
+        <label for="remember-me" style="font-size: 0.875rem; color: var(--text-muted); cursor: pointer;">Ghi nhớ đăng nhập</label>
+      </div>
+
+      <button type="submit" id="btn-login-submit" class="btn btn-primary btn-block">
+        <i class="fas fa-sign-in-alt"></i> Đăng Nhập
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      Chưa có tài khoản? <a href="/register.html">Đăng ký tài khoản mới</a>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script type="module">
+    import { loginUser, getCurrentUser } from '/js/auth.js';
+    import { showToast } from '/js/utils.js';
+
+    // If already logged in, redirect
+    if (getCurrentUser()) {
+      window.location.replace('/dashboard.html');
+    }
+
+    const form = document.getElementById('login-form');
+    const alertBox = document.getElementById('auth-alert');
+    const btnSubmit = document.getElementById('btn-login-submit');
+
+    function showAlert(msg, isError = true) {
+      alertBox.textContent = msg;
+      alertBox.className = `auth-alert ${isError ? 'danger' : 'success'} active`;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const rememberMe = document.getElementById('remember-me')?.checked ?? true;
+
+      btnSubmit.disabled = true;
+      btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+
+      try {
+        await loginUser({ email, password, rememberMe });
+        showAlert('Đăng nhập thành công! Đang chuyển hướng...', false);
+        showToast('Chào mừng bạn quay trở lại!');
+        setTimeout(() => {
+          window.location.replace('/dashboard.html');
+        }, 600);
+      } catch (err) {
+        showAlert(err.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại email hoặc mật khẩu.');
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = '<i class="fas fa-sign-in-alt"></i> Đăng Nhập';
+      }
+    });
+  </script>
+</body>
+</html>

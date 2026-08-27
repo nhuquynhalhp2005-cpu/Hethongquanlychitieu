@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quản Lý Khoản Thu - Hệ Thống Tài Chính Cá Nhân</title>
+
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/dashboard.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+</head>
+<body>
+
+  <div class="app-layout" id="app-layout">
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <div class="main-wrapper">
+      <header class="header" id="header"></header>
+
+      <main class="page-content" id="page-content">
+        
+        <!-- Action Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 0.25rem;">Danh Sách Khoản Thu Nhập</h2>
+            <p style="color: var(--text-muted); font-size: 0.875rem;">Ghi nhận lương thưởng, lợi nhuận đầu tư và các khoản thu nhập khác</p>
+          </div>
+          <div style="display: flex; gap: 0.75rem;">
+            <button id="btn-export-income-csv" class="btn btn-secondary">
+              <i class="fas fa-file-export"></i> Xuất CSV
+            </button>
+            <button id="btn-open-add-income" class="btn btn-success">
+              <i class="fas fa-plus-circle"></i> + Thêm Khoản Thu
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="filter-toolbar">
+          <div class="filter-group">
+            <label class="form-label" style="margin-bottom: 0.25rem;">Tìm kiếm</label>
+            <input type="text" id="income-search-input" class="form-control" placeholder="Tên khoản thu, ghi chú..." />
+          </div>
+
+          <div class="filter-group">
+            <label class="form-label" style="margin-bottom: 0.25rem;">Danh mục</label>
+            <select id="filter-category" class="form-control">
+              <option value="">Tất cả danh mục</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="form-label" style="margin-bottom: 0.25rem;">Theo tháng</label>
+            <input type="month" id="filter-month" class="form-control" />
+          </div>
+
+          <div class="filter-group">
+            <label class="form-label" style="margin-bottom: 0.25rem;">Theo ngày</label>
+            <input type="date" id="filter-date" class="form-control" />
+          </div>
+
+          <div class="filter-group">
+            <label class="form-label" style="margin-bottom: 0.25rem;">Sắp xếp</label>
+            <select id="sort-by" class="form-control">
+              <option value="date-desc">Mới nhất trước</option>
+              <option value="date-asc">Cũ nhất trước</option>
+              <option value="amount-desc">Số tiền cao nhất</option>
+              <option value="amount-asc">Số tiền thấp nhất</option>
+            </select>
+          </div>
+
+          <div class="filter-group" style="flex: 0;">
+            <label class="form-label" style="visibility: hidden; margin-bottom: 0.25rem;">Xóa</label>
+            <button id="btn-reset-filter" class="btn btn-ghost" title="Đặt lại bộ lọc">
+              <i class="fas fa-undo"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Summary Metric Card -->
+        <div style="display: flex; gap: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap;">
+          <div class="card" style="padding: 1rem 1.5rem; flex: 1; display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <div style="font-size: 0.8125rem; color: var(--text-muted);">Tổng số bản ghi</div>
+              <div id="income-count" style="font-size: 1.25rem; font-weight: 800; color: var(--brand-navy);">0 khoản thu</div>
+            </div>
+            <i class="fas fa-list-ol" style="font-size: 1.5rem; color: var(--text-light);"></i>
+          </div>
+
+          <div class="card" style="padding: 1rem 1.5rem; flex: 1; display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <div style="font-size: 0.8125rem; color: var(--text-muted);">Tổng thu nhập trong bộ lọc</div>
+              <div id="income-total-amount" style="font-size: 1.25rem; font-weight: 800; color: var(--income-color);">0 ₫</div>
+            </div>
+            <i class="fas fa-hand-holding-usd" style="font-size: 1.5rem; color: var(--income-color);"></i>
+          </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="card" style="padding: 1rem;">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th style="width: 50px;">STT</th>
+                  <th>Khoản thu</th>
+                  <th>Danh mục</th>
+                  <th>Ngày thu</th>
+                  <th>Số tiền</th>
+                  <th style="text-align: right;">Hành động</th>
+                </tr>
+              </thead>
+              <tbody id="income-tbody">
+                <!-- Incomes rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal: Add / Edit Income -->
+  <div id="income-modal" class="modal-backdrop">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title" id="income-modal-title">Thêm Khoản Thu Mới</h3>
+        <button class="modal-close" id="income-modal-close">&times;</button>
+      </div>
+      <form id="income-form">
+        <div class="modal-body">
+          <input type="hidden" id="income-edit-id" />
+
+          <div class="form-group">
+            <label class="form-label" for="income-title">Tên khoản thu <span style="color: var(--expense-color);">*</span></label>
+            <input type="text" id="income-title" class="form-control" placeholder="Ví dụ: Lương tháng 8, Thưởng dự án..." required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="income-amount">Số tiền (VNĐ) <span style="color: var(--expense-color);">*</span></label>
+            <input type="number" id="income-amount" class="form-control" placeholder="15000000" min="1" step="1000" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="income-category-select">Danh mục thu nhập</label>
+            <select id="income-category-select" class="form-control" required>
+              <!-- Loaded by JS -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="income-date">Ngày thu <span style="color: var(--expense-color);">*</span></label>
+            <input type="date" id="income-date" class="form-control" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="income-note">Ghi chú thêm</label>
+            <textarea id="income-note" class="form-control" rows="2" placeholder="Ghi chú chi tiết nếu có..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="income-modal-cancel">Hủy Bỏ</button>
+          <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Lưu Khoản Thu</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Shared confirm & firebase modal -->
+  <div id="confirm-modal" class="modal-backdrop"></div>
+  <div id="firebase-config-modal" class="modal-backdrop"></div>
+  <div id="toast-container" class="toast-container"></div>
+
+  <script type="module">
+    import { initIncomePage } from '/js/income.js';
+    initIncomePage();
+  </script>
+</body>
+</html>

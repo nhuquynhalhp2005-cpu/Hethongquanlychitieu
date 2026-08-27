@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mục Tiêu Tiết Kiệm - Hệ Thống Tài Chính Cá Nhân</title>
+
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/dashboard.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+</head>
+<body>
+
+  <div class="app-layout" id="app-layout">
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <div class="main-wrapper">
+      <header class="header" id="header"></header>
+
+      <main class="page-content" id="page-content">
+        
+        <!-- Action Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 0.25rem;">Mục Tiêu Tiết Kiệm Cá Nhân</h2>
+            <p style="color: var(--text-muted); font-size: 0.875rem;">Xây dựng quỹ dự phòng khẩn cấp, mua sắm tài sản và du lịch trải nghiệm</p>
+          </div>
+          <button id="btn-open-add-goal" class="btn btn-primary">
+            <i class="fas fa-plus-circle"></i> + Tạo Mục Tiêu Mới
+          </button>
+        </div>
+
+        <!-- Metric Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-title">Số Lượng Mục Tiêu</span>
+              <div class="stat-icon icon-saving"><i class="fas fa-bullseye"></i></div>
+            </div>
+            <div class="stat-value" id="goals-count">0 mục tiêu</div>
+            <div class="stat-subtext">Các quỹ tiết kiệm đang tích lũy</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-title">Tổng Tiền Cần Có</span>
+              <div class="stat-icon icon-income"><i class="fas fa-coins"></i></div>
+            </div>
+            <div class="stat-value text-primary" id="goals-total-target">0 ₫</div>
+            <div class="stat-subtext">Quy mô các quỹ tiết kiệm</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-title">Đã Tiết Kiệm Được</span>
+              <div class="stat-icon icon-saving"><i class="fas fa-piggy-bank"></i></div>
+            </div>
+            <div class="stat-value text-success" id="goals-total-saved">0 ₫</div>
+            <div class="stat-subtext">Số tiền thực tế đã để dành</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-title">Đã Về Đích</span>
+              <div class="stat-icon icon-income"><i class="fas fa-check-circle"></i></div>
+            </div>
+            <div class="stat-value text-success" id="goals-completed-count">0 hoàn thành</div>
+            <div class="stat-subtext">Mục tiêu đã gom đủ 100% số tiền</div>
+          </div>
+        </div>
+
+        <!-- Goals Grid -->
+        <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--brand-navy); margin: 1.75rem 0 1rem 0;">Danh Sách Mục Tiêu Tiết Kiệm</h3>
+        <div class="items-grid" id="goals-grid">
+          <!-- Loaded by JS -->
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal: Add / Edit Saving Goal -->
+  <div id="goal-modal" class="modal-backdrop">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title" id="goal-modal-title">Tạo Mục Tiêu Tiết Kiệm</h3>
+        <button class="modal-close" id="goal-modal-close">&times;</button>
+      </div>
+      <form id="goal-form">
+        <div class="modal-body">
+          <input type="hidden" id="goal-edit-id" />
+
+          <div class="form-group">
+            <label class="form-label" for="goal-name">Tên mục tiêu <span style="color: var(--expense-color);">*</span></label>
+            <input type="text" id="goal-name" class="form-control" placeholder="Ví dụ: Mua Macbook Pro, Du lịch Nhật Bản, Quỹ khẩn cấp..." required />
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="goal-target-amount">Số tiền cần tiết kiệm (VNĐ) <span style="color: var(--expense-color);">*</span></label>
+              <input type="number" id="goal-target-amount" class="form-control" placeholder="30000000" min="1000" step="1000" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="goal-saved-amount">Số tiền đã có sẵn (VNĐ)</label>
+              <input type="number" id="goal-saved-amount" class="form-control" placeholder="5000000" min="0" step="1000" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="goal-deadline">Hạn chót hoàn thành (Deadline) <span style="color: var(--expense-color);">*</span></label>
+            <input type="date" id="goal-deadline" class="form-control" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="goal-desc">Ghi chú hoặc kế hoạch</label>
+            <textarea id="goal-desc" class="form-control" rows="2" placeholder="Ghi chú chi tiết..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="goal-modal-cancel">Hủy Bỏ</button>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Lưu Mục Tiêu</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Deposit to Goal -->
+  <div id="deposit-modal" class="modal-backdrop">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fas fa-plus-circle" style="color: var(--income-color);"></i> Nạp Tiền Vào Mục Tiêu</h3>
+        <button class="modal-close" id="deposit-modal-close">&times;</button>
+      </div>
+      <form id="deposit-form">
+        <div class="modal-body">
+          <input type="hidden" id="deposit-goal-id" />
+          <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem;">
+            Bạn đang thêm tiền tiết kiệm vào: <strong id="deposit-goal-name" style="color: var(--brand-navy);">--</strong>
+          </p>
+
+          <div class="form-group">
+            <label class="form-label" for="deposit-amount">Số tiền muốn nạp thêm (VNĐ) <span style="color: var(--expense-color);">*</span></label>
+            <input type="number" id="deposit-amount" class="form-control" placeholder="1000000" min="1000" step="1000" required />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="deposit-modal-cancel">Hủy Bỏ</button>
+          <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> Xác Nhận Nạp</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="confirm-modal" class="modal-backdrop"></div>
+  <div id="firebase-config-modal" class="modal-backdrop"></div>
+  <div id="toast-container" class="toast-container"></div>
+
+  <script type="module">
+    import { initSavingGoalsPage } from '/js/saving-goals.js';
+    initSavingGoalsPage();
+  </script>
+</body>
+</html>

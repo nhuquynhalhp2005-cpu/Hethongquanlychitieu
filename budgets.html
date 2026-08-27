@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quản Lý Ngân Sách - Hệ Thống Tài Chính Cá Nhân</title>
+
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/dashboard.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+</head>
+<body>
+
+  <div class="app-layout" id="app-layout">
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <div class="main-wrapper">
+      <header class="header" id="header"></header>
+
+      <main class="page-content" id="page-content">
+        
+        <!-- Action Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 0.25rem;">Hạn Mức Ngân Sách Chi Tiêu</h2>
+            <p style="color: var(--text-muted); font-size: 0.875rem;">Thiết lập định mức chi tiêu theo tháng và nhận cảnh báo khi sắp chạm giới hạn</p>
+          </div>
+          <div style="display: flex; gap: 0.75rem; align-items: center;">
+            <input type="month" id="budget-month-filter" class="form-control" style="width: auto;" />
+            <button id="btn-open-add-budget" class="btn btn-primary">
+              <i class="fas fa-plus-circle"></i> + Thiết Lập Ngân Sách
+            </button>
+          </div>
+        </div>
+
+        <!-- Metric Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-title">Tổng Ngân Sách Tháng</span>
+              <div class="stat-icon icon-saving"><i class="fas fa-wallet"></i></div>
+            </div>
+            <div class="stat-value" id="stat-total-budget">0 ₫</div>
+            <div class="stat-subtext">Hạn mức chi tối đa cho phép</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-title">Đã Thực Chi</span>
+              <div class="stat-icon icon-expense"><i class="fas fa-shopping-cart"></i></div>
+            </div>
+            <div class="stat-value text-danger" id="stat-total-spent">0 ₫</div>
+            <div class="stat-subtext">Chi tiêu các danh mục có ngân sách</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-title">Hạn Mức Còn Lại</span>
+              <div class="stat-icon icon-income"><i class="fas fa-coins"></i></div>
+            </div>
+            <div class="stat-value text-success" id="stat-remaining-budget">0 ₫</div>
+            <div class="stat-subtext">Số tiền còn được phép chi tiêu</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-title">Cảnh Báo Vượt Mức</span>
+              <div class="stat-icon icon-debt"><i class="fas fa-exclamation-triangle"></i></div>
+            </div>
+            <div class="stat-value text-warning" id="stat-warning-count">0 cảnh báo</div>
+            <div class="stat-subtext">Danh mục đạt &ge;80% hoặc &ge;100%</div>
+          </div>
+        </div>
+
+        <!-- Budgets Grid -->
+        <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--brand-navy); margin: 1.75rem 0 1rem 0;">Danh Sách Ngân Sách Danh Mục</h3>
+        <div class="items-grid" id="budgets-grid">
+          <!-- Loaded by JS -->
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal: Add / Edit Budget -->
+  <div id="budget-modal" class="modal-backdrop">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title" id="budget-modal-title">Thiết Lập Ngân Sách</h3>
+        <button class="modal-close" id="budget-modal-close">&times;</button>
+      </div>
+      <form id="budget-form">
+        <div class="modal-body">
+          <input type="hidden" id="budget-edit-id" />
+
+          <div class="form-group">
+            <label class="form-label" for="budget-category-select">Danh mục chi tiêu áp dụng <span style="color: var(--expense-color);">*</span></label>
+            <select id="budget-category-select" class="form-control" required>
+              <!-- Loaded by JS -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="budget-amount">Hạn mức ngân sách (VNĐ) <span style="color: var(--expense-color);">*</span></label>
+            <input type="number" id="budget-amount" class="form-control" placeholder="3000000" min="1000" step="1000" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="budget-month-input">Áp dụng cho tháng <span style="color: var(--expense-color);">*</span></label>
+            <input type="month" id="budget-month-input" class="form-control" required />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="budget-modal-cancel">Hủy Bỏ</button>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Lưu Ngân Sách</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="confirm-modal" class="modal-backdrop"></div>
+  <div id="firebase-config-modal" class="modal-backdrop"></div>
+  <div id="toast-container" class="toast-container"></div>
+
+  <script type="module">
+    import { initBudgetsPage } from '/js/budgets.js';
+    initBudgetsPage();
+  </script>
+</body>
+</html>

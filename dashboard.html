@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trang Chủ - Quản Lý Thu Chi & Kế Hoạch Tài Chính Cá Nhân</title>
+
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/dashboard.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+</head>
+<body>
+
+  <!-- Layout Shell Container -->
+  <div class="app-layout" id="app-layout">
+    
+    <!-- Sidebar dynamically rendered by layout.js -->
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+      
+      <!-- Header dynamically rendered by layout.js -->
+      <header class="header" id="header"></header>
+
+      <!-- Page Content -->
+      <main class="page-content" id="page-content">
+        
+        <!-- Welcome & Quick Actions Bar -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 0.25rem;">Tổng Quan Tài Chính Cá Nhân</h2>
+            <p style="color: var(--text-muted); font-size: 0.875rem;">Theo dõi dòng tiền, hạn mức chi tiêu và tiến độ mục tiêu tiết kiệm</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <a href="/income.html" class="btn btn-sm btn-success">
+              <i class="fas fa-plus-circle"></i> + Thêm Thu Nhập
+            </a>
+            <a href="/expenses.html" class="btn btn-sm btn-danger">
+              <i class="fas fa-minus-circle"></i> + Thêm Chi Tiêu
+            </a>
+            <a href="/saving-goals.html" class="btn btn-sm btn-primary">
+              <i class="fas fa-bullseye"></i> + Mục Tiêu
+            </a>
+          </div>
+        </div>
+
+        <!-- 6 Key Financial Stats Cards -->
+        <div class="stats-grid">
+          
+          <!-- Card 1: Tổng Số Dư -->
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-title">Tổng Số Dư Khả Dụng</span>
+              <div class="stat-icon icon-income">
+                <i class="fas fa-wallet"></i>
+              </div>
+            </div>
+            <div class="stat-value text-success" id="stat-total-balance">0 ₫</div>
+            <div class="stat-subtext"><i class="fas fa-coins text-success"></i> Tổng thu - Tổng chi tích lũy</div>
+          </div>
+
+          <!-- Card 2: Thu nhập tháng này -->
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-title">Thu Nhập Tháng Này</span>
+              <div class="stat-icon icon-income">
+                <i class="fas fa-arrow-down"></i>
+              </div>
+            </div>
+            <div class="stat-value" id="stat-month-income">0 ₫</div>
+            <div class="stat-subtext"><i class="fas fa-calendar-check text-success"></i> Tổng các nguồn thu trong tháng</div>
+          </div>
+
+          <!-- Card 3: Chi tiêu tháng này -->
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-title">Chi Tiêu Tháng Này</span>
+              <div class="stat-icon icon-expense">
+                <i class="fas fa-arrow-up"></i>
+              </div>
+            </div>
+            <div class="stat-value text-danger" id="stat-month-expense">0 ₫</div>
+            <div class="stat-subtext"><i class="fas fa-shopping-bag text-danger"></i> Chi phí sinh hoạt & tiêu dùng</div>
+          </div>
+
+          <!-- Card 4: Tiết kiệm tháng này -->
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-title">Tích Lũy Tháng Này</span>
+              <div class="stat-icon icon-saving">
+                <i class="fas fa-piggy-bank"></i>
+              </div>
+            </div>
+            <div class="stat-value text-primary" id="stat-month-savings">0 ₫</div>
+            <div class="stat-subtext"><i class="fas fa-chart-line text-primary"></i> Thu nhập trừ chi tiêu tháng</div>
+          </div>
+
+          <!-- Card 5: Tổng Nợ Cần Trả -->
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-title">Tổng Nợ Còn Lại</span>
+              <div class="stat-icon icon-debt">
+                <i class="fas fa-hand-holding-usd"></i>
+              </div>
+            </div>
+            <div class="stat-value text-warning" id="stat-total-debt">0 ₫</div>
+            <div class="stat-subtext"><i class="fas fa-exclamation-circle text-warning"></i> Cần chú ý thanh toán đúng hạn</div>
+          </div>
+
+          <!-- Card 6: Mục Tiêu Đang Thực Hiện -->
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-title">Mục Tiêu Đang Tích Lũy</span>
+              <div class="stat-icon icon-saving">
+                <i class="fas fa-bullseye"></i>
+              </div>
+            </div>
+            <div class="stat-value" id="stat-active-goals">0 mục tiêu</div>
+            <div class="stat-subtext"><i class="fas fa-flag-checkered text-info"></i> Các dự định đang thực hiện</div>
+          </div>
+
+        </div>
+
+        <!-- 2 Main Interactive Charts -->
+        <div class="charts-grid" style="margin-top: 1.5rem;">
+          
+          <!-- Chart 1: Monthly Income vs Expense -->
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div>
+                <h3 class="chart-title">So Sánh Thu Nhập & Chi Tiêu 6 Tháng Gần Nhất</h3>
+                <p class="chart-subtitle">Tương quan giữa dòng tiền vào và dòng tiền ra theo từng tháng</p>
+              </div>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="chart-income-expense"></canvas>
+            </div>
+          </div>
+
+          <!-- Chart 2: Expense Category Breakdown -->
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div>
+                <h3 class="chart-title">Cơ Cấu Chi Tiêu Tháng Này</h3>
+                <p class="chart-subtitle">Phân bổ chi tiêu theo từng nhóm danh mục</p>
+              </div>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="chart-expense-category"></canvas>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Lower Grid: Recent Transactions & Saving Goals Progress -->
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-top: 1.5rem;" class="dashboard-bottom-grid">
+          
+          <!-- Recent Transactions -->
+          <div class="card" style="padding: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+              <div>
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--brand-navy);">Giao Dịch Gần Đây</h3>
+                <p style="font-size: 0.8125rem; color: var(--text-muted);">Các khoản thu chi phát sinh mới nhất</p>
+              </div>
+              <a href="/transactions.html" class="btn btn-sm btn-outline-primary">Xem tất cả &rarr;</a>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Nội dung</th>
+                    <th>Danh mục</th>
+                    <th>Ngày</th>
+                    <th style="text-align: right;">Số tiền</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-transactions-tbody">
+                  <!-- Loaded via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Saving Goals Progress Widget -->
+          <div class="card" style="padding: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+              <div>
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--brand-navy);">Mục Tiêu Tiết Kiệm</h3>
+                <p style="font-size: 0.8125rem; color: var(--text-muted);">Tiến độ tích lũy cá nhân</p>
+              </div>
+              <a href="/saving-goals.html" class="btn btn-sm btn-ghost" title="Quản lý mục tiêu">
+                <i class="fas fa-chevron-right"></i>
+              </a>
+            </div>
+
+            <div id="dashboard-goals-list">
+              <!-- Loaded via JS -->
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Shared Modals & Toast -->
+  <div id="confirm-modal" class="modal-backdrop"></div>
+  <div id="firebase-config-modal" class="modal-backdrop"></div>
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Dashboard Controller -->
+  <script type="module">
+    import { initDashboard } from '/js/dashboard.js';
+    initDashboard();
+  </script>
+</body>
+</html>

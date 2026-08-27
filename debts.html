@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quản Lý Khoản Nợ & Cho Vay - Hệ Thống Tài Chính Cá Nhân</title>
+
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/dashboard.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+</head>
+<body>
+
+  <div class="app-layout" id="app-layout">
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <div class="main-wrapper">
+      <header class="header" id="header"></header>
+
+      <main class="page-content" id="page-content">
+        
+        <!-- Action Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 0.25rem;">Quản Lý Khoản Nợ & Cho Vay</h2>
+            <p style="color: var(--text-muted); font-size: 0.875rem;">Theo dõi hạn trả nợ, số tiền đã trả từng đợt và kiểm soát nghĩa vụ tài chính</p>
+          </div>
+          <button id="btn-open-add-debt" class="btn btn-primary">
+            <i class="fas fa-plus-circle"></i> + Thêm Khoản Nợ / Cho Vay
+          </button>
+        </div>
+
+        <!-- Metric Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-title">Số Lượng Khoản Nợ</span>
+              <div class="stat-icon icon-debt"><i class="fas fa-file-invoice-dollar"></i></div>
+            </div>
+            <div class="stat-value" id="debts-count">0 khoản nợ</div>
+            <div class="stat-subtext">Danh sách các khoản nợ và cho mượn</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-title">Tổng Tiền Còn Nợ</span>
+              <div class="stat-icon icon-expense"><i class="fas fa-hand-holding-usd"></i></div>
+            </div>
+            <div class="stat-value text-danger" id="debts-total-remaining">0 ₫</div>
+            <div class="stat-subtext">Cần chuẩn bị ngân sách để chi trả</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-title">Đã Thanh Toán</span>
+              <div class="stat-icon icon-income"><i class="fas fa-check-double"></i></div>
+            </div>
+            <div class="stat-value text-success" id="debts-total-paid">0 ₫</div>
+            <div class="stat-subtext">Số tiền đã hoàn trả từ trước đến nay</div>
+          </div>
+        </div>
+
+        <!-- Debts Grid -->
+        <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--brand-navy); margin: 1.75rem 0 1rem 0;">Danh Sách Khoản Vay & Cho Mượn</h3>
+        <div class="items-grid" id="debts-grid">
+          <!-- Loaded by JS -->
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal: Add / Edit Debt -->
+  <div id="debt-modal" class="modal-backdrop">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title" id="debt-modal-title">Ghi Chép Khoản Nợ Mới</h3>
+        <button class="modal-close" id="debt-modal-close">&times;</button>
+      </div>
+      <form id="debt-form">
+        <div class="modal-body">
+          <input type="hidden" id="debt-edit-id" />
+
+          <div class="form-group">
+            <label class="form-label" for="debt-type">Loại giao dịch</label>
+            <select id="debt-type" class="form-control">
+              <option value="borrowed">Tôi Đi Vay / Nợ Tiền</option>
+              <option value="lent">Tôi Cho Người Khác Mượn</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="debt-name">Tên khoản nợ <span style="color: var(--expense-color);">*</span></label>
+            <input type="text" id="debt-name" class="form-control" placeholder="Ví dụ: Vay mua xe ngân hàng, Mượn tiền bạn Nam..." required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="debt-lender">Người cho vay / Người nợ <span style="color: var(--expense-color);">*</span></label>
+            <input type="text" id="debt-lender" class="form-control" placeholder="Tên cá nhân, ngân hàng hoặc tổ chức..." required />
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="debt-total-amount">Tổng số tiền nợ (VNĐ) <span style="color: var(--expense-color);">*</span></label>
+              <input type="number" id="debt-total-amount" class="form-control" placeholder="10000000" min="1000" step="1000" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="debt-paid-amount">Đã trả trước đó (VNĐ)</label>
+              <input type="number" id="debt-paid-amount" class="form-control" placeholder="0" min="0" step="1000" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="debt-due-date">Hạn chót phải trả (Due date) <span style="color: var(--expense-color);">*</span></label>
+            <input type="date" id="debt-due-date" class="form-control" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="debt-note">Ghi chú lãi suất hoặc điều kiện</label>
+            <textarea id="debt-note" class="form-control" rows="2" placeholder="Ghi chú chi tiết..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="debt-modal-cancel">Hủy Bỏ</button>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Lưu Khoản Nợ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Partial Payment -->
+  <div id="pay-debt-modal" class="modal-backdrop">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fas fa-money-check-alt" style="color: var(--primary);"></i> Thanh Toán Khoản Nợ</h3>
+        <button class="modal-close" id="pay-modal-close">&times;</button>
+      </div>
+      <form id="pay-debt-form">
+        <div class="modal-body">
+          <input type="hidden" id="pay-debt-id" />
+          <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+            Khoản nợ: <strong id="pay-debt-name" style="color: var(--brand-navy);">--</strong>
+          </p>
+          <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem;">
+            Số tiền còn nợ hiện tại: <strong id="pay-debt-remaining" style="color: var(--expense-color);">0 ₫</strong>
+          </p>
+
+          <div class="form-group">
+            <label class="form-label" for="pay-debt-amount">Số tiền thanh toán lần này (VNĐ) <span style="color: var(--expense-color);">*</span></label>
+            <input type="number" id="pay-debt-amount" class="form-control" placeholder="1000000" min="1000" step="1000" required />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="pay-modal-cancel">Hủy Bỏ</button>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Xác Nhận Thanh Toán</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="confirm-modal" class="modal-backdrop"></div>
+  <div id="firebase-config-modal" class="modal-backdrop"></div>
+  <div id="toast-container" class="toast-container"></div>
+
+  <script type="module">
+    import { initDebtsPage } from '/js/debts.js';
+    initDebtsPage();
+  </script>
+</body>
+</html>

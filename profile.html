@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hồ Sơ Cá Nhân - Hệ Thống Tài Chính Cá Nhân</title>
+
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/dashboard.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+</head>
+<body>
+
+  <div class="app-layout" id="app-layout">
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <div class="main-wrapper">
+      <header class="header" id="header"></header>
+
+      <main class="page-content" id="page-content">
+        
+        <div style="margin-bottom: 1.5rem;">
+          <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 0.25rem;">Hồ Sơ & Cài Đặt Tài Khoản</h2>
+          <p style="color: var(--text-muted); font-size: 0.875rem;">Quản lý thông tin định danh và bảo mật tài khoản cá nhân</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 1.5rem;" class="profile-layout-grid">
+          
+          <!-- Profile Overview Card -->
+          <div class="card" style="padding: 1.75rem; text-align: center;">
+            <img id="profile-avatar-img" src="" class="user-avatar" style="width: 96px; height: 96px; margin: 0 auto 1rem auto; box-shadow: var(--shadow-md);" />
+            <h3 id="profile-display-name" style="font-size: 1.25rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 0.25rem;">--</h3>
+            <p id="profile-display-email" style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 0.75rem;">--</p>
+            <span id="profile-display-role" class="user-role-badge" style="display: inline-block; margin-bottom: 1.25rem;">--</span>
+
+            <div style="text-align: left; padding-top: 1rem; border-top: 1px solid var(--border-color); font-size: 0.875rem;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span style="color: var(--text-muted);">Ngày tham gia:</span>
+                <strong id="profile-display-created">--</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span style="color: var(--text-muted);">Số dư hiện tại:</span>
+                <strong id="profile-display-balance" style="color: var(--income-color);">0 ₫</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-muted);">Giao dịch đã thực hiện:</span>
+                <strong id="profile-display-trans-count">0</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Edit Profile & Security Form -->
+          <div class="card" style="padding: 1.75rem;">
+            <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--brand-navy); margin-bottom: 1.25rem;">Chỉnh Sửa Thông Tin</h3>
+
+            <form id="profile-form">
+              <div class="form-group">
+                <label class="form-label" for="profile-name-input">Họ và Tên <span style="color: var(--expense-color);">*</span></label>
+                <input type="text" id="profile-name-input" class="form-control" required />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="profile-avatar-input">Link Ảnh Đại Diện (Avatar URL)</label>
+                <input type="url" id="profile-avatar-input" class="form-control" placeholder="https://example.com/avatar.jpg" />
+                <span style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.25rem; display: block;">
+                  Để trống để hệ thống tự tạo avatar theo tên của bạn.
+                </span>
+              </div>
+
+              <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--brand-navy); margin: 1.5rem 0 1rem 0; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                <i class="fas fa-lock"></i> Đổi Mật Khẩu Đăng Nhập
+              </h4>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                  <label class="form-label" for="profile-new-password">Mật khẩu mới</label>
+                  <input type="password" id="profile-new-password" class="form-control" placeholder="Tối thiểu 6 ký tự (nếu muốn đổi)" autocomplete="new-password" />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="profile-confirm-password">Xác nhận mật khẩu mới</label>
+                  <input type="password" id="profile-confirm-password" class="form-control" placeholder="Nhập lại mật khẩu mới" autocomplete="new-password" />
+                </div>
+              </div>
+
+              <div style="margin-top: 1.5rem; text-align: right;">
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-save"></i> Cập Nhật Hồ Sơ
+                </button>
+              </div>
+            </form>
+          </div>
+
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <div id="confirm-modal" class="modal-backdrop"></div>
+  <div id="firebase-config-modal" class="modal-backdrop"></div>
+  <div id="toast-container" class="toast-container"></div>
+
+  <script type="module">
+    import { initProfilePage } from '/js/profile.js';
+    initProfilePage();
+  </script>
+</body>
+</html>

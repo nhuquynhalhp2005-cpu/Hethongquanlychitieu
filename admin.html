@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quản Trị Hệ Thống - Hệ Thống Tài Chính Cá Nhân</title>
+
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/dashboard.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+</head>
+<body>
+
+  <div class="app-layout" id="app-layout">
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <div class="main-wrapper">
+      <header class="header" id="header"></header>
+
+      <main class="page-content" id="page-content">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 0.25rem;">Bảng Điều Khiển Quản Trị Viên (Admin)</h2>
+            <p style="color: var(--text-muted); font-size: 0.875rem;">Giám sát dữ liệu người dùng, phân quyền quản trị và danh mục dùng chung toàn hệ thống</p>
+          </div>
+          <span class="user-role-badge admin" style="font-size: 0.875rem; padding: 0.35rem 0.75rem;">
+            <i class="fas fa-shield-alt"></i> Quyền Quản Trị Tối Cao
+          </span>
+        </div>
+
+        <!-- Global System Stats -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-title">Tổng Số Người Dùng</span>
+              <div class="stat-icon icon-saving"><i class="fas fa-users"></i></div>
+            </div>
+            <div class="stat-value" id="admin-stat-users">0</div>
+            <div class="stat-subtext text-primary" id="admin-stat-new-users">+0 tháng này</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-title">Tổng Giao Dịch Toàn Sàn</span>
+              <div class="stat-icon icon-debt"><i class="fas fa-receipt"></i></div>
+            </div>
+            <div class="stat-value" id="admin-stat-trans">0</div>
+            <div class="stat-subtext">Khoản thu chi đã được ghi nhận</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-title">Tổng Thu Toàn Hệ Thống</span>
+              <div class="stat-icon icon-income"><i class="fas fa-arrow-down"></i></div>
+            </div>
+            <div class="stat-value text-success" id="admin-stat-income">0 ₫</div>
+            <div class="stat-subtext">Dòng tiền thu của mọi tài khoản</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-title">Tổng Chi Toàn Hệ Thống</span>
+              <div class="stat-icon icon-expense"><i class="fas fa-arrow-up"></i></div>
+            </div>
+            <div class="stat-value text-danger" id="admin-stat-expense">0 ₫</div>
+            <div class="stat-subtext">Chi tiêu ghi nhận trên hệ thống</div>
+          </div>
+        </div>
+
+        <!-- Users Management & System Categories -->
+        <div style="display: grid; grid-template-columns: 2.2fr 1fr; gap: 1.5rem; margin-top: 1.5rem;" class="admin-grid-layout">
+          
+          <!-- Users Table -->
+          <div class="card" style="padding: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+              <div>
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--brand-navy);">Danh Sách Tài Khoản Người Dùng</h3>
+                <p style="font-size: 0.8125rem; color: var(--text-muted);">Khóa, mở khóa và thăng cấp quyền quản trị</p>
+              </div>
+
+              <div style="display: flex; gap: 0.5rem;">
+                <input type="text" id="admin-user-search" class="form-control" placeholder="Tìm tên, email..." style="width: 180px; font-size: 0.8125rem;" />
+                <select id="admin-user-role-filter" class="form-control" style="width: auto; font-size: 0.8125rem;">
+                  <option value="">Tất cả quyền</option>
+                  <option value="admin">Chỉ Admin</option>
+                  <option value="user">Chỉ User</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Người dùng</th>
+                    <th>Vai trò</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày tạo</th>
+                    <th style="text-align: right;">Hành động</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-users-tbody">
+                  <!-- Loaded by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- System Categories -->
+          <div class="card" style="padding: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <div>
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--brand-navy);">Danh Mục Hệ Thống</h3>
+                <p style="font-size: 0.8125rem; color: var(--text-muted);">Danh mục mặc định toàn sàn</p>
+              </div>
+            </div>
+
+            <div id="admin-categories-list">
+              <!-- Loaded by JS -->
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <div id="confirm-modal" class="modal-backdrop"></div>
+  <div id="firebase-config-modal" class="modal-backdrop"></div>
+  <div id="toast-container" class="toast-container"></div>
+
+  <script type="module">
+    import { initAdminPage } from '/js/admin.js';
+    initAdminPage();
+  </script>
+</body>
+</html>

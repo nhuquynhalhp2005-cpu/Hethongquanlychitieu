@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quản Lý Danh Mục - Hệ Thống Tài Chính Cá Nhân</title>
+
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/dashboard.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+</head>
+<body>
+
+  <div class="app-layout" id="app-layout">
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <div class="main-wrapper">
+      <header class="header" id="header"></header>
+
+      <main class="page-content" id="page-content">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 0.25rem;">Quản Lý Danh Mục Thu & Chi</h2>
+            <p style="color: var(--text-muted); font-size: 0.875rem;">Tùy biến các danh mục để phân loại thu nhập và kiểm soát chi phí phù hợp nhất</p>
+          </div>
+          <div style="display: flex; gap: 0.75rem;">
+            <button id="btn-add-income-cat" class="btn btn-success">
+              <i class="fas fa-plus"></i> + Danh Mục Thu
+            </button>
+            <button id="btn-add-expense-cat" class="btn btn-danger">
+              <i class="fas fa-plus"></i> + Danh Mục Chi
+            </button>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;" class="categories-columns">
+          
+          <!-- Income Categories -->
+          <div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+              <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--income-color);">
+                <i class="fas fa-arrow-circle-down"></i> Danh Mục Thu Nhập
+              </h3>
+            </div>
+            <div id="income-categories-list">
+              <!-- Loaded by JS -->
+            </div>
+          </div>
+
+          <!-- Expense Categories -->
+          <div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+              <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--expense-color);">
+                <i class="fas fa-arrow-circle-up"></i> Danh Mục Chi Tiêu
+              </h3>
+            </div>
+            <div id="expense-categories-list">
+              <!-- Loaded by JS -->
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal: Add / Edit Category -->
+  <div id="category-modal" class="modal-backdrop">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title" id="category-modal-title">Thêm Danh Mục Mới</h3>
+        <button class="modal-close" id="category-modal-close">&times;</button>
+      </div>
+      <form id="category-form">
+        <div class="modal-body">
+          <input type="hidden" id="category-edit-id" />
+
+          <div class="form-group">
+            <label class="form-label" for="category-type">Loại danh mục <span style="color: var(--expense-color);">*</span></label>
+            <select id="category-type" class="form-control" required>
+              <option value="expense">Chi Tiêu (Expense)</option>
+              <option value="income">Thu Nhập (Income)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="category-name">Tên danh mục <span style="color: var(--expense-color);">*</span></label>
+            <input type="text" id="category-name" class="form-control" placeholder="Ví dụ: Tiền điện nước, Xăng xe, Mua sách..." required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="category-icon">Biểu tượng (Icon Font Awesome)</label>
+            <select id="category-icon" class="form-control">
+              <option value="fa-tag">fa-tag (Mặc định)</option>
+              <option value="fa-utensils">fa-utensils (Ăn uống)</option>
+              <option value="fa-car">fa-car (Đi lại, xe cộ)</option>
+              <option value="fa-shopping-cart">fa-shopping-cart (Mua sắm)</option>
+              <option value="fa-graduation-cap">fa-graduation-cap (Học tập)</option>
+              <option value="fa-gamepad">fa-gamepad (Giải trí)</option>
+              <option value="fa-heartbeat">fa-heartbeat (Y tế, sức khỏe)</option>
+              <option value="fa-home">fa-home (Nhà ở, thuê nhà)</option>
+              <option value="fa-bolt">fa-bolt (Điện nước)</option>
+              <option value="fa-money-bill-wave">fa-money-bill-wave (Lương)</option>
+              <option value="fa-gift">fa-gift (Thưởng, quà)</option>
+              <option value="fa-chart-line">fa-chart-line (Đầu tư)</option>
+              <option value="fa-laptop-code">fa-laptop-code (Làm thêm)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="category-color">Màu sắc đại diện</label>
+            <input type="color" id="category-color" class="form-control" value="#10b981" style="height: 44px; padding: 0.25rem 0.5rem;" />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="category-modal-cancel">Hủy Bỏ</button>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Lưu Danh Mục</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="confirm-modal" class="modal-backdrop"></div>
+  <div id="firebase-config-modal" class="modal-backdrop"></div>
+  <div id="toast-container" class="toast-container"></div>
+
+  <script type="module">
+    import { initCategoriesPage } from '/js/categories.js';
+    initCategoriesPage();
+  </script>
+</body>
+</html>
